@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
     self.first_name + " " + self.last_name
   end
   
-  def user_movies
+  def movies
     list = List.find { |list| list.user_id == self.id }
     lm = ListsMovies.all.find_all {|lm| list.id == lm.list_id}
     #binding.pry
@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
   end
   
   def highest_rated
-    self.user_movies.sort_by{|movie| -movie.metascore}.take(3)
+    self.movies.sort_by{|movie| -movie.metascore}.take(3)
   end
   
 end
