@@ -86,7 +86,7 @@ class CLI
     def search_movies
         puts "What movie are you looking for?"
         search_term = gets.chomp
-        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: 79068308, s: search_term}})
+        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: ????????, s: search_term}})
         result = JSON.parse(api_query)
         movies = result["Search"]
         
@@ -99,7 +99,7 @@ class CLI
         selection_id = movies[input - 1]["imdbID"]
         
         if selection_id <= movies.length
-            movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: 79068308, i: selection_id}})
+            movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: ????????, i: selection_id}})
             movie_result = JSON.parse(movie_query)
             movie_to_add = movie_result
             
