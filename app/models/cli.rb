@@ -13,9 +13,7 @@ class CLI
         
         if input == "1"
             self.signup
-        end
-        
-        if input == "2"
+        elsif input == "2"
             self.login
         end
     end
@@ -33,7 +31,6 @@ class CLI
             puts "Hello, #{@session_user.full_name}!"
         end
         self.menu
-        #binding.pry
     end
     
     def signup
@@ -52,8 +49,10 @@ class CLI
         password_input = gets.chomp
         
         @session_user = User.create(first_name: first_name_input, last_name: last_name_input, username: username_input, password: password_input)
+        puts "Name your list!"
+        name_input = gets.chomp
+        List.create(user_id: @session_user.id, name: name_input)
         self.menu
-        #binding.pry
     end
 
     def menu
@@ -65,7 +64,7 @@ class CLI
         if choice == "1"
             self.list_movies
         elsif choice == "2"
-            self.list_movies
+            self.search_movies
         elsif choice == "3"
             self.highest_rated
         else
@@ -85,13 +84,36 @@ class CLI
     end
 
     def search_movies
-        puts "What song are you looking for?"
+        puts "What movie are you looking for?"
         search_term = gets.chomp
-        # 1. RestClient.get("spotify.api/searchQuery")
-        # 2. JSON.parse
-        # 3. Let the user make some choices 
-        # 4. Say they choose a favorite, make the updates to your 
-        #     DB to save the song info you need easy access to and to represent the favorite 
+        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: 79068308, s: search_term}})
+        result = JSON.parse(api_query)
+        movies = result["Search"]
+        
+        puts "We found #{movies.length} results:"
+        movies.each_with_index {|m,i| puts "#{i+1}. #{m['Title']} (#{m['Year']})"}
+
+        puts "What movie would you like to add to your collection? (press a number)"
+        input = gets.chomp
+        input = input.to_i
+        selection_id = movies[input - 1]["imdbID"]
+        
+        if selection_id <= movies.length
+            movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: 79068308, i: selection_id}})
+            movie_result = JSON.parse(movie_query)
+            movie_to_add = movie_result
+            
+            new_movie = Movie.create(title: movie_to_add["Title"], cast: movie_to_add["Actors"], plot: movie_to_add["Plot"], year: movie_to_add["Year"], metascore: movie_to_add["Metascore"], imdb_id: movie_to_add["imdbID"])
+            list = List.all.find_by(user_id: @session_user.id)
+            ListsMovies.create(movie_id: new_movie.id, list_id: list.id)
+        else
+            puts "Invalid input!"
+            movies.each_with_index {|m,i| puts "#{i+1}. #{m['Title']} (#{m['Year']})"}
+        end
+        
+        
+        
+        self.menu
     end
 
 end
