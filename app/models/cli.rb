@@ -26,7 +26,7 @@ class CLI
         
         @session_user = User.all.find_by(username: username_input, password: password_input)
         if @session_user == nil
-            puts "User not found. Check you password!"
+            puts "User not found. Check you password! Check you capitalization!"
         else
             puts "Hello, #{@session_user.full_name}!"
         end
@@ -60,6 +60,7 @@ class CLI
         puts "1. View my list of movies"
         puts "2. Search for new movies"
         puts "3. See my top 3 highest-rated"
+        puts "4. See movies I share with other users"
         choice = gets.chomp
         if choice == "1"
             self.list_movies
@@ -67,13 +68,20 @@ class CLI
             self.search_movies
         elsif choice == "3"
             self.highest_rated
+        elsif choice == "4"
+            self.shared_movies
         else
             puts "Invalid choice!"
             self.menu
         end
     end
 
+    def list
+        List.all.find_by(user_id: @session_user.id)
+    end
+
     def list_movies
+        puts "~~~~" + self.list.name + "~~~~"
         @session_user.movies.each_with_index {|movie, i| puts "#{i + 1}. #{movie.title}"}
         self.menu
     end
@@ -86,7 +94,7 @@ class CLI
     def search_movies
         puts "What movie are you looking for?"
         search_term = gets.chomp
-        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: ????????, s: search_term}})
+        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: ?????, s: search_term}})
         result = JSON.parse(api_query)
         movies = result["Search"]
         
@@ -96,24 +104,40 @@ class CLI
         puts "What movie would you like to add to your collection? (press a number)"
         input = gets.chomp
         input = input.to_i
-        selection_id = movies[input - 1]["imdbID"]
         
-        if selection_id <= movies.length
-            movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: ????????, i: selection_id}})
+        if input <= movies.length
+            selection_id = movies[input - 1]["imdbID"]
+            movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: ?????, i: selection_id}})
             movie_result = JSON.parse(movie_query)
             movie_to_add = movie_result
             
-            new_movie = Movie.create(title: movie_to_add["Title"], cast: movie_to_add["Actors"], plot: movie_to_add["Plot"], year: movie_to_add["Year"], metascore: movie_to_add["Metascore"], imdb_id: movie_to_add["imdbID"])
-            list = List.all.find_by(user_id: @session_user.id)
-            ListsMovies.create(movie_id: new_movie.id, list_id: list.id)
+            new_movie = Movie.find_or_create_by(imdb_id: movie_to_add["imdbID"]) do |film|
+                film.title = movie_to_add["Title"]
+                film.cast = movie_to_add["Actors"]
+                film.plot = movie_to_add["Plot"]
+                film.year = movie_to_add["Year"]
+                film.metascore = movie_to_add["Metascore"]
+                film.imdb_id = movie_to_add["imdbID"]
+            end
+            ListsMovies.find_or_create_by(movie_id: new_movie.id, list_id: self.list.id)
         else
             puts "Invalid input!"
             movies.each_with_index {|m,i| puts "#{i+1}. #{m['Title']} (#{m['Year']})"}
         end
-        
-        
-        
+
         self.menu
+    end
+    
+    def shared_movies
+        @session_user.movies.map do |m|
+            movie_check = ListsMovies.movies_in_common(m.id)
+            puts "Users who also like #{m.title.upcase}"
+            if movie_check != nil
+                movie_check.each {|user| puts user.full_name}
+            else
+                puts "You're the only person who likes this movie."
+            end
+        end
     end
 
 end
