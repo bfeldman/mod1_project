@@ -23,10 +23,11 @@ module Startup
         @session_user = User.all.find_by(username: username_input, password: password_input)
         if @session_user == nil
             puts "User not found. Check you password! Check you capitalization!"
+            self.welcome
         else
             puts "Hello, #{@session_user.full_name}!"
+            self.main_menu
         end
-        self.main_menu
     end
     
     def signup
@@ -52,11 +53,11 @@ module Startup
     end
 
     def main_menu
-        puts "What would you like to do? (enter a number)"
-        puts "1. View my list of movies"
-        puts "2. Search for new movies"
-        puts "3. See my top 3 highest-rated"
-        puts "4. See movies I share with other users"
+        puts "What would you like to do? (enter a number or type 'exit' to log out)"
+        puts "1. View my full list of movies"
+        puts "2. Search for new movies to add to the list"
+        puts "3. See my top 3 highest-rated movies"
+        puts "4. See movies I have in common with other users"
         choice = gets.chomp
         if choice == "1"
             self.list_movies
@@ -66,6 +67,8 @@ module Startup
             self.highest_rated
         elsif choice == "4"
             self.shared_movies
+        elsif choice.downcase == "exit" || choice.downcase == "exit"
+            :quit
         else
             puts "Invalid choice!"
             self.main_menu
