@@ -57,6 +57,7 @@ module Startup
         puts "2. Search for new movies"
         puts "3. See my top 3 highest-rated"
         puts "4. See movies I share with other users"
+        puts "5. Remove movies from my list"
         choice = gets.chomp
         if choice == "1"
             self.list_movies
@@ -66,6 +67,8 @@ module Startup
             self.highest_rated
         elsif choice == "4"
             self.shared_movies
+        elsif choice == "5"
+            self.delete_movies
         else
             puts "Invalid choice!"
             self.main_menu
