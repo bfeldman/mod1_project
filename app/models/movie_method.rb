@@ -15,7 +15,9 @@ module MovieMethod
         input = gets.chomp
         if input.to_i > @session_user.movies.size
             puts "Please enter a valid number."
-            self.movie_menu
+            self.movie_metadata
+        elsif input.downcase == "exit"
+            self.main_menu
         elsif input.to_i <= @session_user.movies.size
             selection = @session_user.movies[input.to_i - 1]
             puts "#{selection.title.upcase} (#{selection.year})"
@@ -26,8 +28,6 @@ module MovieMethod
             puts "METASCORE:"
             puts selection.metascore
             self.menu_loop
-        elsif input.downcase == "exit"
-            self.main_menu
         end
     end
     
