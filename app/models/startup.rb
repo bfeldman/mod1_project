@@ -65,9 +65,6 @@ module Startup
             self.shared_movies
         elsif menu_choice == 4
             self.edit_list
-        else
-            puts "Invalid choice!"
-            self.main_menu
         end
     end
     
