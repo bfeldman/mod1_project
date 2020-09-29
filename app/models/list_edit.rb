@@ -18,7 +18,7 @@ module ListEdit
             movies.each_with_index {|m,i| puts "#{i+1}. #{m['Title']} (#{m['Year']})"}
 
             puts "What movie(s) would you like to add to your collection?\n(enter one or more numbers)"
-            
+
             multiple_inputs
             input_check = @input.all? { |choice| choice.to_i <= movies.length }
             
@@ -60,16 +60,31 @@ module ListEdit
         #can add logic here to determine which list user wants to edit if we make users have more than one list
         movies = @session_user.movies.each_with_index {|movie, i| puts "#{i + 1}. #{movie.title}"}
         movies
-        input = gets.chomp
+        # input = gets.chomp
 
-        if input.to_i <= movies.length
-            movie_to_delete_id = @session_user.movies[input - 1].id
-            ListsMovies.where(list_id: @session_user.list.id, movie_id: movie_to_delete_id).destroy_all
+        multiple_inputs
+
+        input_check = @input.all? { |choice| choice.to_i <= movies.length }
+            
+        if input_check == true
+            @input.each do |i|
+                movie_to_delete_id = @session_user.movies[@input - 1].id
+                ListsMovies.where(list_id: @session_user.list.id, movie_id: movie_to_delete_id).destroy_all
+            end
         else
             puts "Invalid input!"
         end
 
         self.main_menu
+
+        # if input.to_i <= movies.length
+        #     movie_to_delete_id = @session_user.movies[input - 1].id
+        #     ListsMovies.where(list_id: @session_user.list.id, movie_id: movie_to_delete_id).destroy_all
+        # else
+        #     puts "Invalid input!"
+        # end
+
+        # self.main_menu
     end
 
     private
