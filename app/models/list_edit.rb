@@ -4,7 +4,7 @@ module ListEdit
     def search_movies
         puts "What movie are you looking for?"
         search_term = gets.chomp
-        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: ????, s: search_term}})
+        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: $apikey, s: search_term}})
         result = JSON.parse(api_query)
         movies = result["Search"]
         
@@ -17,7 +17,7 @@ module ListEdit
         
         if input <= movies.length
             selection_id = movies[input - 1]["imdbID"]
-            movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: ????, i: selection_id}})
+            movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: $apikey, i: selection_id}})
             movie_result = JSON.parse(movie_query)
             movie_to_add = movie_result
             
