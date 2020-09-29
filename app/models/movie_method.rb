@@ -23,6 +23,8 @@ module MovieMethod
             puts "#{selection.title.upcase} (#{selection.year})"
             puts "CAST:"
             puts selection.cast
+            puts "DIRECTOR:"
+            puts selection.director
             puts "PLOT:"
             puts selection.plot
             puts "METASCORE:"
