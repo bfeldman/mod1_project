@@ -37,6 +37,25 @@ module ListEdit
 
         self.main_menu
     end
-    
+
+    # can be more DRY here if we can call self.list_movies from movie_method.rb, but list_movies currently goes back to main menu
+    def delete_movies
+        puts "What movie would you like to delete from your collection?"
+        puts "~~~~" + self.list.name + "~~~~"
+        #can add logic here to determine which list user wants to edit if we make users have more than one list
+        movies = @session_user.movies.each_with_index {|movie, i| puts "#{i + 1}. #{movie.title}"}
+        puts movies
+        input = gets.chomp
+        input = input.to_i
+
+        if input <= movies.length
+            movie_to_delete_id = @session_user.movies[input - 1].id
+            ListsMovies.where(list_id: @session_user.list.id, movie_id: movie_to_delete_id).destroy_all
+        else
+            puts "Invalid input!"
+        end
+
+        self.main_menu
+    end
     
 end

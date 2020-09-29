@@ -54,10 +54,11 @@ module Startup
 
     def main_menu
         puts "What would you like to do? (enter a number or type 'exit' to log out)"
-        puts "1. View my full list of movies"
-        puts "2. Search for new movies to add to the list"
-        puts "3. See my top 3 highest-rated movies"
-        puts "4. See movies I have in common with other users"
+        puts "1. View my list of movies"
+        puts "2. Search for new movies"
+        puts "3. See my top 3 highest-rated"
+        puts "4. See movies I share with other users"
+        puts "5. Remove movies from my list"
         choice = gets.chomp
         if choice == "1"
             self.list_movies
@@ -67,6 +68,8 @@ module Startup
             self.highest_rated
         elsif choice == "4"
             self.shared_movies
+        elsif choice == "5"
+            self.delete_movies
         elsif choice.downcase == "exit" || choice.downcase == "exit"
             :quit
         else
