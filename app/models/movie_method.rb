@@ -46,7 +46,7 @@ module MovieMethod
         end
     end
     
-    def highest_rated
+    def display_highest_rated
         @session_user.highest_rated.each_with_index {|movie, i| puts "#{i + 1}. #{movie.title} (Metascore: #{movie.metascore})"}
         self.menu_loop
     end

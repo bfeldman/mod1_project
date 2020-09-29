@@ -1,28 +1,29 @@
 module Startup
     
+    
     def welcome
         puts "Welcome to The Movie App!"
-        puts "Do you want to... (press a number)"
-        puts "1. Sign up"
-        puts "2. Log in"
-        input = gets.chomp
-        
-        if input == "1"
+        prompt = TTY::Prompt.new
+        startup_choice = prompt.select("Do you want to...") do |menu|
+            menu.choice 'Sign up', 1
+            menu.choice 'Log in', 2
+        end
+
+        if startup_choice == 1
             self.signup
-        elsif input == "2"
+        elsif startup_choice == 2
             self.login
         end
     end
     
     def login
-        puts "Username:"
-        username_input = gets.chomp
-        puts "Password:"
-        password_input = gets.chomp
+        prompt = TTY::Prompt.new
+        username_input = prompt.ask("Username:")
+        password_input = prompt.mask("Password:")
         
         @session_user = User.all.find_by(username: username_input, password: password_input)
         if @session_user == nil
-            puts "User not found. Check you password! Check you capitalization!"
+            puts "User not found. Check your password! Check your spelling!"
             self.welcome
         else
             puts "Hello, #{@session_user.full_name}!"
@@ -31,50 +32,45 @@ module Startup
     end
     
     def signup
-        puts "First name:"
-        first_name_input = gets.chomp
-        puts "Last name:"
-        last_name_input = gets.chomp
-        puts "Username:"
-        username_input = gets.chomp
+        prompt = TTY::Prompt.new
+        first_name_input = prompt.ask("First name:")
+        last_name_input = prompt.ask("Last name:")
+        username_input = prompt.ask("Username:")
             while User.exists?(username: username_input)
-                puts "User already exists!"
-                puts "Username:"
-                username_input = gets.chomp
+                puts "Username already exists!"
+                username_input = prompt.ask("Username:")
             end
-        puts "Password:"
-        password_input = gets.chomp
+        password_input = prompt.mask("Password:")
         
         @session_user = User.create(first_name: first_name_input, last_name: last_name_input, username: username_input, password: password_input)
-        puts "Name your list!"
-        name_input = gets.chomp
+        name_input = prompt.ask("What should we call your list?")
         List.create(user_id: @session_user.id, name: name_input)
         self.main_menu
     end
 
     def main_menu
-        puts "What would you like to do? (enter a number or type 'exit' to log out)"
-        puts "1. View my list of movies"
-        puts "2. Search for new movies"
-        puts "3. See my top 3 highest-rated"
-        puts "4. See movies I share with other users"
-        puts "5. Remove movies from my list"
-        choice = gets.chomp
-        if choice == "1"
+        prompt = TTY::Prompt.new
+        menu_choice = prompt.select("What would you like to do?") do |menu|
+            menu.choice 'View my list of movies', 1
+            menu.choice 'See my top 3 highest-rated movies', 2
+            menu.choice 'See movies I have in common with other users', 3
+            menu.choice 'Edit my list', 4            
+        end
+
+        if menu_choice == 1
             self.list_movies
-        elsif choice == "2"
-            self.search_movies
-        elsif choice == "3"
-            self.highest_rated
-        elsif choice == "4"
+        elsif menu_choice == 2
+            self.display_highest_rated
+        elsif menu_choice == 3
             self.shared_movies
-        elsif choice == "5"
-            self.delete_movies
-        elsif choice.downcase == "exit" || choice.downcase == "exit"
-            :quit
+        elsif menu_choice == 4
+            self.edit_list
         else
             puts "Invalid choice!"
             self.main_menu
         end
     end
+    
+    
+    
 end
