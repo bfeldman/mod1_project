@@ -6,3 +6,5 @@ require_all 'app/models'
 ENV['SINATRA_ENV'] ||= 'development'
 
 ActiveRecord::Base.establish_connection(ENV['SINATRA_ENV'].to_sym)
+old_logger = ActiveRecord::Base.logger
+ActiveRecord::Base.logger = nil

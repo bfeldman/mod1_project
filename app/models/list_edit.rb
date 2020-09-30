@@ -49,6 +49,28 @@ module ListEdit
             self.main_menu
 
         end
+        
+        if movie_choice == 'bye'
+            self.edit_list
+        end
+        
+        
+        selection_id = movies[movie_choice]["imdbID"]
+        movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: $apikey, i: selection_id}})
+        movie_result = JSON.parse(movie_query)
+        movie_to_add = movie_result
+        
+        new_movie = Movie.find_or_create_by(imdb_id: movie_to_add["imdbID"]) do |film|
+            film.title = movie_to_add["Title"]
+            film.cast = movie_to_add["Actors"]
+            film.plot = movie_to_add["Plot"]
+            film.year = movie_to_add["Year"]
+            film.metascore = movie_to_add["Metascore"]
+            film.imdb_id = movie_to_add["imdbID"]
+            film.director = movie_to_add["Director"]
+        end
+        
+        ListsMovies.find_or_create_by(movie_id: new_movie.id, list_id: self.list.id)
 
         
     end
@@ -74,6 +96,8 @@ module ListEdit
         else
             puts "Invalid input!"
         end
+        
+        ListsMovies.where(list_id: @session_user.list.id, movie_id: movie_to_delete_id).destroy_all        
 
         self.main_menu
 

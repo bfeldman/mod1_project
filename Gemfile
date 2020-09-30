@@ -8,5 +8,10 @@ gem 'sqlite3', '~>1.4'
 gem 'rake'
 gem 'database_cleaner'
 gem 'require_all'
-#gem 'tty'
 gem 'rest-client'
+gem "tty-prompt"
+gem "tty-color"
+gem "pastel"
+gem "tty-font"
+gem "tty-progressbar"
+gem "tty-spinner"
