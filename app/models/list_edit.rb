@@ -19,25 +19,31 @@ module ListEdit
 
     def search_movies
         prompt = TTY::Prompt.new
-        search_term = prompt.ask("What movie are you looking for?")
-        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: $apikey, s: search_term}})
-        result = JSON.parse(api_query)
-        movies = result["Search"]
+        pastel = Pastel.new
+        search_term = prompt.ask("What movie are you looking for?") #get user search term
+        api_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: $apikey, s: search_term}}) #query api
+        result = JSON.parse(api_query) #parse JSON
+        movies = result["Search"] #search results as a hash
         
-        movie_choice = prompt.select("What movie would you like to add to your collection?") do |menu|
-            menu.per_page 11
-            movies.each_with_index do |m,i|
-                menu.choice "#{m['Title']} (#{m['Year']})", i
-            end
-            menu.choice '=Go Back=', 'bye'
+        if movies == nil
+            puts pastel.red("No results found!")
+            self.edit_list
         end
         
+        #creates menu choices
+        movie_choice_hash = movies.each_with_object({}) do |m, hash|
+            hash["#{m['Title']} (#{m['Year']})"] = m['imdbID']
+        end
+        movie_choice_hash["=GO BACK="] = 'bye'
+        
+        #displays menu choices
+        movie_choice = prompt.select("What movie would you like to add to your collection?", movie_choice_hash, per_page: 11)
         if movie_choice == 'bye'
             self.edit_list
         end
         
-        
-        selection_id = movies[movie_choice]["imdbID"]
+        # grabs title metadata from API and adds to database and user's list
+        selection_id = movie_choice
         movie_query = RestClient.get("https://www.omdbapi.com/", {params: {apikey: $apikey, i: selection_id}})
         movie_result = JSON.parse(movie_query)
         movie_to_add = movie_result
@@ -53,7 +59,6 @@ module ListEdit
         end
         
         ListsMovies.find_or_create_by(movie_id: new_movie.id, list_id: self.list.id)
-
         self.main_menu
     end
 
@@ -69,13 +74,13 @@ module ListEdit
             menu.choice '=Exit Menu=', 'bye'
         end
         
-        if movie_choice == 'bye'
+        if movie_to_delete_id == 'bye'
             self.edit_list
         end
         
         ListsMovies.where(list_id: @session_user.list.id, movie_id: movie_to_delete_id).destroy_all        
-
         self.main_menu
     end
+    
     
 end

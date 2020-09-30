@@ -27,6 +27,7 @@ module Startup
             self.welcome
         else
             puts "Hello, #{@session_user.full_name}!"
+            self.clear_screen
             self.main_menu
         end
     end
@@ -68,6 +69,10 @@ module Startup
         end
     end
     
-    
+    # def clear_screen
+    #     #system("clear") || system("cls")
+    #     #system("reset")
+    #     puts "\e[H\e[2J"
+    # end
     
 end
