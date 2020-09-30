@@ -11,6 +11,8 @@ An app that lets users catalog movies in their collection, or that they want to 
 -   A user can find the three highest-rated movies in their collection
 -   A user can change their list's name
 ​
+***
+
 ## Models, Associations, & Attributes:
 ​
 #### The app has four models: `User`, `List`, `Movie`, and `ListMovie`
@@ -21,6 +23,7 @@ An app that lets users catalog movies in their collection, or that they want to 
 -   A User has many `Movie`s through its `List`
 -   A `Movie` belongs to many `User`s
 ​
+***
 ​
 `User`
 - username: string
