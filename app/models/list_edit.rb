@@ -5,7 +5,8 @@ module ListEdit
         menu_choice = prompt.select("What would you like to do?") do |menu|
             menu.choice 'Add movies to my list', 1
             menu.choice 'Delete movies from my list', 2
-            menu.choice 'Go back to main menu', 3
+            menu.choice 'Rename list', 3
+            menu.choice 'Go back to main menu', 4
         end
         
         if menu_choice == 1
@@ -13,6 +14,8 @@ module ListEdit
         elsif menu_choice == 2
             self.delete_movies
         elsif menu_choice == 3
+            self.rename_list
+        elsif menu_choice == 4
             self.main_menu
         end
     end
@@ -62,7 +65,6 @@ module ListEdit
         self.main_menu
     end
 
-    # can be more DRY here if we can call self.list_movies from movie_method.rb, but list_movies currently goes back to main menu
     def delete_movies
         user_movies = @session_user.movies
         prompt = TTY::Prompt.new
@@ -79,6 +81,17 @@ module ListEdit
         end
         
         ListsMovies.where(list_id: @session_user.list.id, movie_id: movie_to_delete_id).destroy_all        
+        self.main_menu
+    end
+    
+    def rename_list
+        prompt = TTY::Prompt.new
+        new_name = prompt.ask("New list name:")
+        
+        list = List.find_by(user_id: @session_user.id)
+        list.name = new_name
+        list.save
+        
         self.main_menu
     end
     
