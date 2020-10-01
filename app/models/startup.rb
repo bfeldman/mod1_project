@@ -2,18 +2,26 @@ module Startup
     
     
     def welcome
-        puts "Welcome to The Movie App!"
-        prompt = TTY::Prompt.new
-        startup_choice = prompt.select("Do you want to...") do |menu|
-            menu.choice 'Sign up', 1
-            menu.choice 'Log in', 2
-        end
+        Catpix::print_image "/Users/arthur/Desktop/Flatiron_School/Projects/Mod1/Project_Assets/good_bad_ugly.jpg",
+            :limit_x => 0.8,
+            :limit_y => 0.8,
+            :center_x => true,
+            :center_y => true,
+            :bg => "white",
+            :bg_fill => false,
+            :resolution => "auto"
+        # puts "Welcome to The Movie App!"
+        # prompt = TTY::Prompt.new
+        # startup_choice = prompt.select("Do you want to...") do |menu|
+        #     menu.choice 'Sign up', 1
+        #     menu.choice 'Log in', 2
+        # end
 
-        if startup_choice == 1
-            self.signup
-        elsif startup_choice == 2
-            self.login
-        end
+        # if startup_choice == 1
+        #     self.signup
+        # elsif startup_choice == 2
+        #     self.login
+        # end
     end
     
     def login
