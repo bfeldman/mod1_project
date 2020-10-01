@@ -59,6 +59,7 @@ module ListEdit
             film.metascore = movie_to_add["Metascore"]
             film.imdb_id = movie_to_add["imdbID"]
             film.director = movie_to_add["Director"]
+            film.poster = movie_to_add["Poster"]
         end
         
         ListsMovies.find_or_create_by(movie_id: new_movie.id, list_id: self.list.id)

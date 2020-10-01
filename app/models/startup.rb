@@ -2,26 +2,18 @@ module Startup
     
     
     def welcome
-        Catpix::print_image "/Users/arthur/Desktop/Flatiron_School/Projects/Mod1/Project_Assets/good_bad_ugly.jpg",
-            :limit_x => 0.8,
-            :limit_y => 0.8,
-            :center_x => true,
-            :center_y => true,
-            :bg => "white",
-            :bg_fill => false,
-            :resolution => "auto"
-        # puts "Welcome to The Movie App!"
-        # prompt = TTY::Prompt.new
-        # startup_choice = prompt.select("Do you want to...") do |menu|
-        #     menu.choice 'Sign up', 1
-        #     menu.choice 'Log in', 2
-        # end
+        puts "Welcome to The Movie App!"
+        prompt = TTY::Prompt.new
+        startup_choice = prompt.select("Do you want to...") do |menu|
+            menu.choice 'Sign up', 1
+            menu.choice 'Log in', 2
+        end
 
-        # if startup_choice == 1
-        #     self.signup
-        # elsif startup_choice == 2
-        #     self.login
-        # end
+        if startup_choice == 1
+            self.signup
+        elsif startup_choice == 2
+            self.login
+        end
     end
     
     def login
@@ -62,7 +54,9 @@ module Startup
             menu.choice 'View my list of movies', 1
             menu.choice 'See my top 3 highest-rated movies', 2
             menu.choice 'See movies I have in common with other users', 3
-            menu.choice 'Edit my list', 4            
+            menu.choice 'Edit my list', 4
+            menu.choice 'Look at movie posters', 5    
+            menu.choice 'Look at movie trailers', 6        
         end
 
         if menu_choice == 1
@@ -73,6 +67,10 @@ module Startup
             self.shared_movies
         elsif menu_choice == 4
             self.edit_list
+        elsif menu_choice == 5
+            self.movie_posters
+        elsif menu_choice == 6
+            self.movie_trailers
         end
     end
     

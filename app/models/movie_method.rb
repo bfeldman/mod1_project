@@ -64,5 +64,85 @@ module MovieMethod
         end
         self.main_menu
     end
-    
+  
+    def movie_posters
+        pastel = Pastel.new
+        puts "~~~~" + pastel.red.on_cyan.bold(self.list.name) + "~~~~"
+        user_movies = @session_user.movies
+        prompt = TTY::Prompt.new
+        poster_to_view = prompt.select("What movie poster do you want to see?") do |menu|
+            menu.per_page 20
+            user_movies.each do |m|
+                menu.choice m.title, m.id
+            end
+            menu.choice '=Exit Menu=', 'bye'
+        end
+                
+        if poster_to_view == 'bye'
+            self.main_menu
+        else
+            self.display_poster(poster_to_view)
+        end
+    end
+
+    def display_poster(movie_id)
+        selection = Movie.all.find_by(id: movie_id)
+        puts "Here's the poster for #{selection.title}"
+        poster_image = selection.poster
+        poster_defaults(poster_image)
+        self.movie_posters
+    end
+
+    def movie_trailers
+        pastel = Pastel.new
+        puts "~~~~" + pastel.red.on_cyan.bold(self.list.name) + "~~~~"
+        user_movies = @session_user.movies
+        prompt = TTY::Prompt.new
+        trailer_to_view = prompt.select("What movie trailer do you want to see?") do |menu|
+            menu.per_page 20
+            user_movies.each do |m|
+                menu.choice m.title, m.id
+            end
+            menu.choice '=Exit Menu=', 'bye'
+        end
+                
+        if trailer_to_view == 'bye'
+            self.main_menu
+        else
+            self.get_trailer_link(trailer_to_view)
+        end
+    end
+
+    def get_trailer_link(movie_id)
+        selection = Movie.all.find_by(id: movie_id)
+        puts "Here's the trailer for #{selection.title}"
+        imdb_id = selection.imdb_id
+        api_query = RestClient.get "https://api.themoviedb.org/3/find/#{selection.imdb_id}", {params: {api_key: $moviedb_key, external_source: 'imdb_id'}} #query api
+        result = JSON.parse(api_query) #parse JSON to get id
+        movie_trailer_id = result["movie_results"][0]["id"] #get id from themoviedb.com
+        api_query = RestClient.get "https://api.themoviedb.org/3/movie/#{movie_trailer_id}", {params: {api_key: $moviedb_key, append_to_response: 'videos'}}
+        result = JSON.parse(api_query)#parse JSON to get list of trailers
+        movie_trailer_url = "https://youtu.be/" + result["videos"]["results"][0]["key"]
+        self.play_trailer(movie_trailer_url)
+    end
+
+    def play_trailer(movie_trailer_url)
+        full_url = `youtube-dl -f bestvideo -g #{movie_trailer_url}`
+        system ("ffmpeg -hide_banner -loglevel warning -i '#{full_url}' -c:v rawvideo -pix_fmt rgb24 -window_size 80x25 -f caca -" )
+        self.movie_posters
+    end
+
+    private
+
+    def poster_defaults(poster_image)
+        Catpix::print_image poster_image.to_s,
+            :limit_x => 0.3,
+            :limit_y => 0,
+            :center_x => true,
+            :center_y => true,
+            :bg => "white",
+            :bg_fill => false,
+            :resolution => "auto"
+    end
+
 end

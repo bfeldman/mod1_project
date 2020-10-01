@@ -1,6 +1,7 @@
 GIT
   remote: https://github.com/artwilton/catpix.git
-  revision: 68f4b8023738fe7f85f822743ca0d56fd0aceb29
+  revision: a4803eb9dcb24fd039449ed0ed7e462159901f56
+  branch: update_for_imagemagick_7
   specs:
     catpix (0.2.0)
       docopt (~> 0.5, >= 0.5.0)
