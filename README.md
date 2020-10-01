@@ -64,9 +64,7 @@ launchy - <https://github.com/copiousfreetime/launchy>
 -   A user can change their list's name
 
 ## Models, Associations, & Attributes:
-​
 #### The app has four models: `User`, `List`, `Movie`, and `ListMovie`
-​
 -   A `User` has one `List`
 -   A `List` has many `Movie`s through `ListMovie`
 -   A `Movie` belongs to many `List`s
