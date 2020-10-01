@@ -69,6 +69,9 @@ module MovieMethod
     def display_poster(selection)
         if selection.poster == nil
             puts "No movie posters found!"
+        elsif
+            app_check?("magick") == nil
+            puts "Sorry, you need to install ImageMagick for this feature."
         else
             puts "Here's the poster for #{selection.title}"
             poster_image = selection.poster
@@ -106,17 +109,36 @@ module MovieMethod
         api_query = RestClient.get "https://api.themoviedb.org/3/movie/#{movie_trailer_id}", {params: {api_key: $moviedb_key, append_to_response: 'videos'}}
         result = JSON.parse(api_query)#parse JSON to get list of trailers
         movie_trailer_url = "https://youtu.be/" + result["videos"]["results"][0]["key"]
-        self.play_trailer(movie_trailer_url)
+        self.play_trailer_in_shell(movie_trailer_url)
     end
 
-    def play_trailer(movie_trailer_url)
+    def play_trailer_in_browser(movie_trailer_url)
         Launchy.open(movie_trailer_url)
-        # full_url = `youtube-dl -f bestvideo -g #{movie_trailer_url}`
-        # system ("ffmpeg -hide_banner -loglevel warning -i '#{full_url}' -c:v rawvideo -pix_fmt rgb24 -window_size 80x25 -f caca -" )
+        self.main_menu
+    end
+
+    def play_trailer_in_shell(movie_trailer_url)
+        unless app_check?("ffmpeg") == nil
+            full_url = `youtube-dl -f bestvideo -g #{movie_trailer_url}`
+            system ("ffmpeg -hide_banner -loglevel warning -i '#{full_url}' -c:v rawvideo -pix_fmt rgb24 -window_size 80x25 -f caca -" )
+        else
+            puts "Sorry, you need to install ffmpeg with libcaca for this feature."
+        end
         self.main_menu
     end
 
     private
+
+    def app_check?(cmd)
+        exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+        ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+          exts.each do |ext|
+            exe = File.join(path, "#{cmd}#{ext}")
+            return exe if File.executable?(exe) && !File.directory?(exe)
+          end
+        end
+        nil
+    end
 
     def poster_defaults(poster_image)
         Catpix::print_image poster_image.to_s,
