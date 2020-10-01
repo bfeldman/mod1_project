@@ -25,7 +25,6 @@ module MovieMethod
     end
     
     def movie_metadata(movie_id)
-        self.clear_screen
         pastel = Pastel.new
         selection = Movie.all.find_by(id: movie_id)
         puts pastel.red.on_white.bold("#{selection.title.upcase} (#{selection.year})")
@@ -41,7 +40,6 @@ module MovieMethod
     end
     
     def display_highest_rated
-        self.clear_screen
         pastel = Pastel.new
         @session_user.highest_rated.each_with_index {|movie, i| puts pastel.red("#{i + 1}. ") + "#{movie.title} " + pastel.yellow("(Metascore: #{movie.metascore})") }
         self.main_menu
@@ -49,7 +47,6 @@ module MovieMethod
 
     
     def shared_movies
-        self.clear_screen
         pastel = Pastel.new
         @session_user.movies.map do |m|
             movie_check = ListsMovies.movies_in_common(m.id)
