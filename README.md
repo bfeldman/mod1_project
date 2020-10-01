@@ -2,6 +2,8 @@
 
 An app that lets users catalog movies in their collection, or that they want to see, or whatever they want.
 
+Created by [Brian Feldman](https://github.com/bfeldman) and [Arthur Wilton](https://github.com/artwilton)
+
 Prerequisites
 -------------
 
@@ -34,10 +36,12 @@ Acknowledgments
 To get the movie data were are utilizing:
 
 OMDb API - <http://www.omdbapi.com/>
+
 TMDb API - <https://www.themoviedb.org/documentation/api>
 
 "This product uses the TMDb API but is not endorsed or certified by TMDb."
-<img width="50%" src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" />
+<img width="25%" src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" />
+
 
 We are also using the following gems:
 
@@ -49,16 +53,15 @@ rmagick - <https://github.com/rmagick/rmagick>
 
 launchy - <https://github.com/copiousfreetime/launchy>
 
-#### User Stories:
-​
+***
+
+## User Stories:
 -   Users can see a list of all of their movies
 -   Users have the ability to add and delete movies from their lists
 -   Users are able to check the metadata of movies
 -   Users can also see other users who have the same movie in their collections
 -   A user can find the three highest-rated movies in their collection
 -   A user can change their list's name
-​
-***
 
 ## Models, Associations, & Attributes:
 ​
@@ -78,6 +81,7 @@ launchy - <https://github.com/copiousfreetime/launchy>
 - first_name: string
 - last_name: string
 ​
+
 `List`
 - user_id: integer
 - list_name: string
