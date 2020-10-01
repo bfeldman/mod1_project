@@ -7,6 +7,7 @@ require_relative "../models/startup.rb"
 require_relative "../models/movie_method.rb"
 require_relative "../models/list_edit.rb"
 require 'catpix'
+require 'launchy'
 
 class CLI 
 

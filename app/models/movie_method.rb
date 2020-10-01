@@ -27,6 +27,7 @@ module MovieMethod
     def movie_metadata(movie_id)
         pastel = Pastel.new
         selection = Movie.all.find_by(id: movie_id)
+        self.display_poster(selection)
         puts pastel.red.on_white.bold("#{selection.title.upcase} (#{selection.year})")
         puts pastel.green("Cast:")
         puts selection.cast
@@ -64,33 +65,15 @@ module MovieMethod
         end
         self.main_menu
     end
-  
-    def movie_posters
-        pastel = Pastel.new
-        puts "~~~~" + pastel.red.on_cyan.bold(self.list.name) + "~~~~"
-        user_movies = @session_user.movies
-        prompt = TTY::Prompt.new
-        poster_to_view = prompt.select("What movie poster do you want to see?") do |menu|
-            menu.per_page 20
-            user_movies.each do |m|
-                menu.choice m.title, m.id
-            end
-            menu.choice '=Exit Menu=', 'bye'
-        end
-                
-        if poster_to_view == 'bye'
-            self.main_menu
-        else
-            self.display_poster(poster_to_view)
-        end
-    end
 
-    def display_poster(movie_id)
-        selection = Movie.all.find_by(id: movie_id)
-        puts "Here's the poster for #{selection.title}"
-        poster_image = selection.poster
-        poster_defaults(poster_image)
-        self.movie_posters
+    def display_poster(selection)
+        if selection.poster == nil
+            puts "No movie posters found!"
+        else
+            puts "Here's the poster for #{selection.title}"
+            poster_image = selection.poster
+            poster_defaults(poster_image)
+        end
     end
 
     def movie_trailers
@@ -127,9 +110,10 @@ module MovieMethod
     end
 
     def play_trailer(movie_trailer_url)
-        full_url = `youtube-dl -f bestvideo -g #{movie_trailer_url}`
-        system ("ffmpeg -hide_banner -loglevel warning -i '#{full_url}' -c:v rawvideo -pix_fmt rgb24 -window_size 80x25 -f caca -" )
-        self.movie_posters
+        Launchy.open(movie_trailer_url)
+        # full_url = `youtube-dl -f bestvideo -g #{movie_trailer_url}`
+        # system ("ffmpeg -hide_banner -loglevel warning -i '#{full_url}' -c:v rawvideo -pix_fmt rgb24 -window_size 80x25 -f caca -" )
+        self.main_menu
     end
 
     private
@@ -138,7 +122,7 @@ module MovieMethod
         Catpix::print_image poster_image.to_s,
             :limit_x => 0.3,
             :limit_y => 0,
-            :center_x => true,
+            :center_x => false,
             :center_y => true,
             :bg => "white",
             :bg_fill => false,

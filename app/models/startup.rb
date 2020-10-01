@@ -54,9 +54,8 @@ module Startup
             menu.choice 'View my list of movies', 1
             menu.choice 'See my top 3 highest-rated movies', 2
             menu.choice 'See movies I have in common with other users', 3
-            menu.choice 'Edit my list', 4
-            menu.choice 'Look at movie posters', 5    
-            menu.choice 'Look at movie trailers', 6        
+            menu.choice 'Edit my list', 4 
+            menu.choice 'Look at movie trailers', 5        
         end
 
         if menu_choice == 1
@@ -68,8 +67,6 @@ module Startup
         elsif menu_choice == 4
             self.edit_list
         elsif menu_choice == 5
-            self.movie_posters
-        elsif menu_choice == 6
             self.movie_trailers
         end
     end
