@@ -6,7 +6,7 @@ module ListEdit
             menu.choice 'Add movies to my list', 1
             menu.choice 'Delete movies from my list', 2
             menu.choice 'Rename list', 3
-            menu.choice 'Go back to main menu', 4
+            menu.choice '==Go back to main menu==', 4
         end
         
         if menu_choice == 1
@@ -74,7 +74,7 @@ module ListEdit
             user_movies.each do |m|
                 menu.choice m.title, m.id
             end
-            menu.choice '=Exit Menu=', 'bye'
+            menu.choice '==Go back==', 'bye'
         end
         
         if movie_to_delete_id == 'bye'
@@ -86,13 +86,14 @@ module ListEdit
     end
     
     def rename_list
+        pastel=Pastel.new
         prompt = TTY::Prompt.new
         new_name = prompt.ask("New list name:")
         
         list = List.find_by(user_id: @session_user.id)
         list.name = new_name
         list.save
-        
+        puts pastel.on_blue("List renamed as: #{new_name}")
         self.main_menu
     end
     

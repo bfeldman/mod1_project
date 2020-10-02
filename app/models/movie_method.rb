@@ -14,7 +14,7 @@ module MovieMethod
             user_movies.each do |m|
                 menu.choice m.title, m.id
             end
-            menu.choice '=Exit Menu=', 'bye'
+            menu.choice '=Go back=', 'bye'
         end
                 
         if movie_to_inspect == 'bye'
@@ -52,13 +52,13 @@ module MovieMethod
         @session_user.movies.map do |m|
             movie_check = ListsMovies.movies_in_common(m.id)
             if movie_check != nil
+                puts "======================================"
                 puts "Users who also like " + pastel.red.bold(m.title.upcase)
                 movie_check.each do |user|
                     if user.full_name != @session_user.full_name
                         puts user.full_name
                     end
                 end
-                puts "======================================"
             else
                 puts "You have no movies in common with other users!"
             end
@@ -89,7 +89,7 @@ module MovieMethod
             user_movies.each do |m|
                 menu.choice m.title, m.id
             end
-            menu.choice '=Exit Menu=', 'bye'
+            menu.choice '=Go back=', 'bye'
         end
                 
         if trailer_to_view == 'bye'

@@ -2,7 +2,8 @@ module Startup
     
     
     def welcome
-        puts "Welcome to The Movie App!"
+        pastel=Pastel.new
+        puts pastel.bold.on_red("Welcome to The Movie App!")
         prompt = TTY::Prompt.new
         startup_choice = prompt.select("Do you want to...") do |menu|
             menu.choice 'Sign up', 1
@@ -51,23 +52,27 @@ module Startup
     def main_menu
         prompt = TTY::Prompt.new
         menu_choice = prompt.select("What would you like to do?") do |menu|
-            menu.choice 'View my list of movies', 1
-            menu.choice 'See my top 3 highest-rated movies', 2
-            menu.choice 'See movies I have in common with other users', 3
-            menu.choice 'Edit my list', 4 
-            menu.choice 'Look at movie trailers', 5        
+            menu.choice 'Check out my list of movies', 'list_movies'
+            menu.choice 'Watch movie trailers', 'movie_trailers'
+            menu.choice 'See my top 3 highest-rated movies', 'highest_rated'
+            menu.choice 'See movies I have in common with other users', 'shared_movies'
+            menu.choice 'Edit my list', 'edit_list'
+            menu.choice '==Exit program==', 'bye'         
         end
 
-        if menu_choice == 1
+        case menu_choice
+        when 'list_movies'
             self.list_movies
-        elsif menu_choice == 2
+        when 'highest_rated'
             self.display_highest_rated
-        elsif menu_choice == 3
+        when 'shared_movies'
             self.shared_movies
-        elsif menu_choice == 4
+        when 'edit_list'
             self.edit_list
-        elsif menu_choice == 5
+        when 'movie_trailers'
             self.movie_trailers
+        when 'bye'
+            :exit
         end
     end
     
