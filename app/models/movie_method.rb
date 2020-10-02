@@ -95,7 +95,17 @@ module MovieMethod
         if trailer_to_view == 'bye'
             self.main_menu
         else
-            self.get_trailer_link(trailer_to_view)
+            prompt = TTY::Prompt.new
+            trailer_choice = prompt.select("Do you want to...") do |menu|
+            menu.choice 'Open the trailer in your browser', 1
+            menu.choice 'Watch the trailer in your terminal (beta)', 2
+            end
+        end
+
+        if trailer_choice == 1
+            self.play_trailer_in_browser(trailer_to_view)
+        elsif trailer_choice == 2
+            self.play_trailer_in_shell(trailer_to_view)
         end
     end
 
@@ -109,20 +119,25 @@ module MovieMethod
         api_query = RestClient.get "https://api.themoviedb.org/3/movie/#{movie_trailer_id}", {params: {api_key: $moviedb_key, append_to_response: 'videos'}}
         result = JSON.parse(api_query)#parse JSON to get list of trailers
         movie_trailer_url = "https://youtu.be/" + result["videos"]["results"][0]["key"]
-        self.play_trailer_in_shell(movie_trailer_url)
     end
 
-    def play_trailer_in_browser(movie_trailer_url)
+    def play_trailer_in_browser(movie_id)
+        movie_trailer_url = get_trailer_link(movie_id)
         Launchy.open(movie_trailer_url)
         self.main_menu
     end
 
-    def play_trailer_in_shell(movie_trailer_url)
-        unless app_check?("ffmpeg") == nil
+    def play_trailer_in_shell(movie_id)
+        pastel = Pastel.new
+        movie_trailer_url = get_trailer_link(movie_id)
+        ffmpeg_check = app_check?("ffmpeg")
+        youtubedl_check = app_check?("youtube-dl")
+        unless ffmpeg_check == nil || youtubedl_check == nil
+            puts pastel.green("Trailer is loading...")
             full_url = `youtube-dl -f bestvideo -g #{movie_trailer_url}`
-            system ("ffmpeg -hide_banner -loglevel warning -i '#{full_url}' -c:v rawvideo -pix_fmt rgb24 -window_size 80x25 -f caca -" )
+            system ("ffmpeg -hide_banner -loglevel warning -i '#{full_url}' -c:v rawvideo -pix_fmt rgb24 -window_size 160x50 -f caca -" )
         else
-            puts "Sorry, you need to install ffmpeg with libcaca for this feature."
+            puts pastel.red("Sorry, you need to install ffmpeg and youtube-dl for this feature.")
         end
         self.main_menu
     end
