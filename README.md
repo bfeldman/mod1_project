@@ -7,7 +7,7 @@ Created by [Brian Feldman](https://github.com/bfeldman) and [Arthur Wilton](http
 Prerequisites
 -------------
 
-In order to use the **poster** and **trailer** features you will need to install **ImageMagick** Version 7 and **FFmpeg** compiled with the libcaca library.
+In order to use the **poster** and **trailer(beta)** features you will need to install **ImageMagick** Version 7, **FFmpeg** compiled with the libcaca library, and **youtube-dl**.
 
 ### ImageMagick Installation
 
@@ -20,6 +20,12 @@ brew instal imagemagick
 ```sh
 brew tap homebrew-ffmpeg/ffmpeg
 brew install homebrew-ffmpeg/ffmpeg/ffmpeg --with-libcaca
+```
+
+### youtube-dl
+
+```sh
+brew install youtube-dl
 ```
 
 Installation
