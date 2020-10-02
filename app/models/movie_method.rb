@@ -67,7 +67,7 @@ module MovieMethod
     end
 
     def display_poster(selection)
-        if selection.poster == nil
+        if selection.poster == 'N/A'
             puts "No movie posters found!"
         elsif
             app_check?("magick") == nil
